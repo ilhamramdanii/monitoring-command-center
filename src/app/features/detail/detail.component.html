@@ -1,0 +1,72 @@
+<div class="detail" *ngIf="service$ | async as svc; else notFound">
+
+  <!-- Back Button -->
+  <button class="back-btn" (click)="goBack()">&#8592; Back to Dashboard</button>
+
+  <!-- Service Header -->
+  <div class="detail__header" [ngClass]="'detail__header--' + svc.status.toLowerCase()">
+    <div class="detail__info">
+      <h1 class="detail__name">{{ svc.name }}</h1>
+      <span class="detail__version">v{{ svc.version }}</span>
+    </div>
+    <app-status-badge [status]="svc.status"></app-status-badge>
+  </div>
+
+  <!-- Meta Row -->
+  <div class="detail__meta">
+    <div class="meta-item">
+      <span class="meta-item__label">Service ID</span>
+      <span class="meta-item__value">{{ svc.id }}</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-item__label">Version</span>
+      <span class="meta-item__value">{{ svc.version }}</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-item__label">Last Heartbeat</span>
+      <span class="meta-item__value">{{ svc.lastHeartbeat | date:'dd MMM yyyy, HH:mm:ss' }}</span>
+    </div>
+  </div>
+
+  <!-- Log Stream -->
+  <section class="log-section">
+    <h2 class="log-section__title">
+      <span>Log Stream</span>
+      <span class="log-section__live">&#9679; LIVE</span>
+    </h2>
+
+    <app-error-banner [message]="logsError"></app-error-banner>
+
+    <div class="log-terminal">
+      <div class="log-terminal__header">
+        <span class="log-terminal__dot log-terminal__dot--red"></span>
+        <span class="log-terminal__dot log-terminal__dot--yellow"></span>
+        <span class="log-terminal__dot log-terminal__dot--green"></span>
+        <span class="log-terminal__title">{{ svc.id }} — log output</span>
+      </div>
+      <div class="log-terminal__body">
+        <div
+          class="log-entry"
+          [ngClass]="'log-entry--' + entry.level.toLowerCase()"
+          *ngFor="let entry of logs$ | async"
+        >
+          <span class="log-entry__time">{{ formatTime(entry.timestamp) }}</span>
+          <span class="log-entry__level">[{{ entry.level }}]</span>
+          <span class="log-entry__message">{{ entry.message }}</span>
+        </div>
+
+        <div class="log-terminal__empty" *ngIf="(logs$ | async)?.length === 0 && !logsError">
+          No log entries found.
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<ng-template #notFound>
+  <div class="not-found">
+    <p>Service not found.</p>
+    <button class="back-btn" (click)="goBack()">&#8592; Back to Dashboard</button>
+  </div>
+</ng-template>

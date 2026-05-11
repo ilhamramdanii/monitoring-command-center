@@ -1,0 +1,117 @@
+{
+  "services": [
+    {
+      "id": "svc-001",
+      "name": "Auth Service",
+      "version": "2.4.1",
+      "status": "UP",
+      "lastHeartbeat": "2026-05-11T08:00:00.000Z",
+      "type": "Core"
+    },
+    {
+      "id": "svc-002",
+      "name": "Payment Gateway",
+      "version": "1.9.3",
+      "status": "UP",
+      "lastHeartbeat": "2026-05-11T08:00:00.000Z",
+      "type": "Integration"
+    },
+    {
+      "id": "svc-003",
+      "name": "Notification Service",
+      "version": "3.1.0",
+      "status": "WARNING",
+      "lastHeartbeat": "2026-05-11T08:00:00.000Z",
+      "type": "Integration"
+    },
+    {
+      "id": "svc-004",
+      "name": "Inventory API",
+      "version": "1.2.7",
+      "status": "DOWN",
+      "lastHeartbeat": "2026-05-11T07:45:00.000Z",
+      "type": "Core"
+    },
+    {
+      "id": "svc-005",
+      "name": "Reporting Engine",
+      "version": "4.0.0",
+      "status": "UP",
+      "lastHeartbeat": "2026-05-11T08:00:00.000Z",
+      "type": "Data"
+    },
+    {
+      "id": "svc-006",
+      "name": "CDN Edge Node",
+      "version": "2.0.1",
+      "status": "UP",
+      "lastHeartbeat": "2026-05-11T08:00:00.000Z",
+      "type": "Infrastructure"
+    },
+    {
+      "id": "svc-007",
+      "name": "Search Indexer",
+      "version": "1.5.2",
+      "status": "WARNING",
+      "lastHeartbeat": "2026-05-11T07:58:00.000Z",
+      "type": "Data"
+    },
+    {
+      "id": "svc-008",
+      "name": "Email Worker",
+      "version": "3.3.3",
+      "status": "UP",
+      "lastHeartbeat": "2026-05-11T08:00:00.000Z",
+      "type": "Integration"
+    }
+  ],
+  "logs": [
+    { "id": "1",  "serviceId": "svc-001", "timestamp": "2026-05-11T07:55:00.000Z", "message": "Token validation successful for user #4821", "level": "INFO" },
+    { "id": "2",  "serviceId": "svc-001", "timestamp": "2026-05-11T07:56:10.000Z", "message": "JWT refresh cycle completed", "level": "INFO" },
+    { "id": "3",  "serviceId": "svc-001", "timestamp": "2026-05-11T07:57:30.000Z", "message": "Rate limit threshold reached: 950/1000 req/min", "level": "WARN" },
+    { "id": "4",  "serviceId": "svc-001", "timestamp": "2026-05-11T07:58:45.000Z", "message": "Auth service health check passed", "level": "INFO" },
+    { "id": "5",  "serviceId": "svc-001", "timestamp": "2026-05-11T07:59:50.000Z", "message": "Session cache hit ratio: 94.3%", "level": "INFO" },
+
+    { "id": "6",  "serviceId": "svc-002", "timestamp": "2026-05-11T07:50:00.000Z", "message": "Transaction #TXN-9921 processed successfully", "level": "INFO" },
+    { "id": "7",  "serviceId": "svc-002", "timestamp": "2026-05-11T07:52:10.000Z", "message": "Payment provider latency: 320ms", "level": "INFO" },
+    { "id": "8",  "serviceId": "svc-002", "timestamp": "2026-05-11T07:54:30.000Z", "message": "Webhook retry #2 for order #ORD-441", "level": "WARN" },
+    { "id": "9",  "serviceId": "svc-002", "timestamp": "2026-05-11T07:56:00.000Z", "message": "Daily settlement initiated", "level": "INFO" },
+    { "id": "10", "serviceId": "svc-002", "timestamp": "2026-05-11T07:59:00.000Z", "message": "Fraud detection score: 0.12 (safe)", "level": "INFO" },
+
+    { "id": "11", "serviceId": "svc-003", "timestamp": "2026-05-11T07:48:00.000Z", "message": "SMS queue depth: 1,240 (above normal)", "level": "WARN" },
+    { "id": "12", "serviceId": "svc-003", "timestamp": "2026-05-11T07:51:00.000Z", "message": "Push notification delivery rate dropped to 78%", "level": "WARN" },
+    { "id": "13", "serviceId": "svc-003", "timestamp": "2026-05-11T07:53:00.000Z", "message": "Email worker connection pool exhausted", "level": "ERROR" },
+    { "id": "14", "serviceId": "svc-003", "timestamp": "2026-05-11T07:55:00.000Z", "message": "Attempting reconnect to SMTP relay", "level": "WARN" },
+    { "id": "15", "serviceId": "svc-003", "timestamp": "2026-05-11T07:57:00.000Z", "message": "SMTP relay reconnected, processing backlog", "level": "INFO" },
+
+    { "id": "16", "serviceId": "svc-004", "timestamp": "2026-05-11T07:40:00.000Z", "message": "Database connection timeout after 30s", "level": "ERROR" },
+    { "id": "17", "serviceId": "svc-004", "timestamp": "2026-05-11T07:41:30.000Z", "message": "Retry #1 failed — DB host unreachable", "level": "ERROR" },
+    { "id": "18", "serviceId": "svc-004", "timestamp": "2026-05-11T07:42:45.000Z", "message": "Retry #2 failed — DB host unreachable", "level": "ERROR" },
+    { "id": "19", "serviceId": "svc-004", "timestamp": "2026-05-11T07:43:00.000Z", "message": "Circuit breaker OPEN — service halted", "level": "ERROR" },
+    { "id": "20", "serviceId": "svc-004", "timestamp": "2026-05-11T07:45:00.000Z", "message": "Health probe failed, marking service DOWN", "level": "ERROR" },
+
+    { "id": "21", "serviceId": "svc-005", "timestamp": "2026-05-11T07:52:00.000Z", "message": "Daily report job started", "level": "INFO" },
+    { "id": "22", "serviceId": "svc-005", "timestamp": "2026-05-11T07:54:00.000Z", "message": "Aggregating 2.3M records", "level": "INFO" },
+    { "id": "23", "serviceId": "svc-005", "timestamp": "2026-05-11T07:56:00.000Z", "message": "Report generated: sales_2026-05-11.pdf", "level": "INFO" },
+    { "id": "24", "serviceId": "svc-005", "timestamp": "2026-05-11T07:58:00.000Z", "message": "Exported to S3 bucket successfully", "level": "INFO" },
+    { "id": "25", "serviceId": "svc-005", "timestamp": "2026-05-11T07:59:30.000Z", "message": "Job completed in 7m 30s", "level": "INFO" },
+
+    { "id": "26", "serviceId": "svc-006", "timestamp": "2026-05-11T07:55:00.000Z", "message": "Cache hit ratio: 98.7%", "level": "INFO" },
+    { "id": "27", "serviceId": "svc-006", "timestamp": "2026-05-11T07:56:30.000Z", "message": "Edge node SG-01 synchronized", "level": "INFO" },
+    { "id": "28", "serviceId": "svc-006", "timestamp": "2026-05-11T07:57:45.000Z", "message": "Bandwidth usage: 2.1 Gbps (62% capacity)", "level": "INFO" },
+    { "id": "29", "serviceId": "svc-006", "timestamp": "2026-05-11T07:58:50.000Z", "message": "SSL certificate valid for 87 days", "level": "INFO" },
+    { "id": "30", "serviceId": "svc-006", "timestamp": "2026-05-11T07:59:55.000Z", "message": "All edge nodes healthy", "level": "INFO" },
+
+    { "id": "31", "serviceId": "svc-007", "timestamp": "2026-05-11T07:50:00.000Z", "message": "Index lag detected: 45s behind real-time", "level": "WARN" },
+    { "id": "32", "serviceId": "svc-007", "timestamp": "2026-05-11T07:52:00.000Z", "message": "Shard rebalancing in progress", "level": "WARN" },
+    { "id": "33", "serviceId": "svc-007", "timestamp": "2026-05-11T07:54:00.000Z", "message": "Memory usage at 87% of heap limit", "level": "WARN" },
+    { "id": "34", "serviceId": "svc-007", "timestamp": "2026-05-11T07:56:00.000Z", "message": "GC pause: 340ms — impacting query latency", "level": "WARN" },
+    { "id": "35", "serviceId": "svc-007", "timestamp": "2026-05-11T07:58:00.000Z", "message": "Rebalancing 60% complete", "level": "INFO" },
+
+    { "id": "36", "serviceId": "svc-008", "timestamp": "2026-05-11T07:55:00.000Z", "message": "Processed 1,200 emails in last batch", "level": "INFO" },
+    { "id": "37", "serviceId": "svc-008", "timestamp": "2026-05-11T07:56:30.000Z", "message": "Queue depth: 43 (normal)", "level": "INFO" },
+    { "id": "38", "serviceId": "svc-008", "timestamp": "2026-05-11T07:57:45.000Z", "message": "Template cache refreshed", "level": "INFO" },
+    { "id": "39", "serviceId": "svc-008", "timestamp": "2026-05-11T07:58:50.000Z", "message": "Bounce rate: 0.3% (within threshold)", "level": "INFO" },
+    { "id": "40", "serviceId": "svc-008", "timestamp": "2026-05-11T07:59:55.000Z", "message": "Worker pool healthy: 8/8 threads active", "level": "INFO" }
+  ]
+}

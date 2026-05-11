@@ -1,0 +1,408 @@
+<div class="dashboard">
+
+  <!-- ── Header ─────────────────────────────────────────── -->
+  <header class="dashboard__header">
+    <div class="header__brand">
+      <button class="header__menu-btn" (click)="sidebar.toggle()" title="Toggle sidebar" aria-label="Toggle sidebar navigation">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor">
+          <rect x="0" y="1"  width="16" height="2" rx="1"/>
+          <rect x="0" y="7"  width="16" height="2" rx="1"/>
+          <rect x="0" y="13" width="16" height="2" rx="1"/>
+        </svg>
+      </button>
+      <div class="header__title-group">
+        <h1 class="header__title">Monitoring Command Center</h1>
+        <p class="header__sub">Service Reliability Dashboard &middot; Garuda Indonesia Group</p>
+      </div>
+    </div>
+    <div class="header__right">
+      <!-- Offline badge — shown only when error is active -->
+      <div class="header__offline" *ngIf="error$ | async" role="status" aria-label="API offline, showing cached data">
+        <span class="header__offline-dot"></span>
+        <span>OFFLINE</span>
+      </div>
+      <div class="header__refresh" *ngIf="(isRefreshing$ | async) && !(error$ | async)">
+        <span class="spinner"></span>
+        <span>Syncing</span>
+      </div>
+      <!-- Sync ring timer — CSS-driven, no JS timing -->
+      <div
+        class="sync-timer"
+        [class.sync-timer--syncing]="isRefreshing$ | async"
+        [class.sync-timer--error]="error$ | async"
+        [title]="(error$ | async) ? 'API offline — retrying…' : 'Next sync cycle'"
+      >
+        <svg class="sync-timer__svg" width="28" height="28" viewBox="0 0 28 28">
+          <circle cx="14" cy="14" [attr.r]="RING_RADIUS" fill="none" stroke="#1A2E45" stroke-width="2.5"/>
+          <circle
+            cx="14" cy="14" [attr.r]="RING_RADIUS"
+            fill="none"
+            [attr.stroke]="(error$ | async) ? '#E03C3C' : '#0A90D4'"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            [attr.stroke-dasharray]="RING_CIRCUMFERENCE"
+            stroke-dashoffset="0"
+            transform="rotate(-90 14 14)"
+            [class.ring-depleting]="ringAnimating"
+          />
+        </svg>
+        <span class="sync-timer__label" [class.sync-timer__label--error]="error$ | async">
+          {{ (error$ | async) ? 'ERR' : 'SYNC' }}
+        </span>
+      </div>
+      <div class="header__clock">
+        <span class="header__clock-dot"></span>
+        <span class="header__clock-time">{{ currentTime }}</span>
+        <span class="header__clock-label">WIB</span>
+      </div>
+      <div class="header__profile">
+        <div class="header__profile-info">
+          <span class="header__profile-name">Admin</span>
+          <span class="header__profile-role">Administrator</span>
+        </div>
+        <div class="header__profile-avatar">AD</div>
+      </div>
+      <button class="header__logout-btn" (click)="auth.logout()" title="Sign out" aria-label="Sign out of dashboard">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M6 14H3a1 1 0 01-1-1V3a1 1 0 011-1h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M10 11l3-3-3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M13 8H6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ── Error Banner ────────────────────────────────────── -->
+  <app-error-banner
+    [message]="error$ | async"
+    [lastSyncAt]="monitoring.lastSyncAt$ | async"
+  ></app-error-banner>
+
+  <!-- ── Health Badge ────────────────────────────────────── -->
+  <div
+    class="health-badge"
+    *ngIf="!(isInitialLoading$ | async) && (healthStatus$ | async) as health"
+    [ngClass]="'health-badge--' + health"
+  >
+    <span class="health-badge__dot"></span>
+    <span class="health-badge__text">
+      <ng-container *ngIf="health === 'operational'">ALL SYSTEMS OPERATIONAL</ng-container>
+      <ng-container *ngIf="health === 'degraded'">SYSTEMS DEGRADED — One or more services in warning state</ng-container>
+      <ng-container *ngIf="health === 'critical'">CRITICAL ALERT — Service outage detected</ng-container>
+    </span>
+  </div>
+
+  <!-- ── KPI Cards ───────────────────────────────────────── -->
+  <ng-container *ngIf="summary$ | async as s">
+    <div class="kpi-grid" *ngIf="s.total > 0">
+      <div class="kpi-card kpi-card--total">
+        <svg class="kpi-card__icon" viewBox="0 0 24 24" fill="none">
+          <rect x="2" y="2" width="9" height="9" rx="2" stroke="currentColor" stroke-width="1.5"/>
+          <rect x="13" y="2" width="9" height="9" rx="2" stroke="currentColor" stroke-width="1.5"/>
+          <rect x="2" y="13" width="9" height="9" rx="2" stroke="currentColor" stroke-width="1.5"/>
+          <rect x="13" y="13" width="9" height="9" rx="2" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+        <span class="kpi-card__value">{{ s.total }}</span>
+        <span class="kpi-card__label">Total Services</span>
+        <span class="kpi-card__sub">endpoints registered</span>
+        <span class="kpi-card__trend kpi-card__trend--stable">↑ all reachable</span>
+        <span class="kpi-card__bar"></span>
+      </div>
+      <div class="kpi-card kpi-card--up">
+        <svg class="kpi-card__icon" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 12l3 3 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="kpi-card__value">{{ s.up }}</span>
+        <span class="kpi-card__label">Operational</span>
+        <span class="kpi-card__sub">running normally</span>
+        <span class="kpi-card__trend kpi-card__trend--stable">↑ stable 24h</span>
+        <span class="kpi-card__bar"></span>
+      </div>
+      <div class="kpi-card kpi-card--warning">
+        <svg class="kpi-card__icon" viewBox="0 0 24 24" fill="none">
+          <path d="M12 3L22 21H2L12 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          <path d="M12 9v5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="12" cy="17.5" r="0.75" fill="currentColor"/>
+        </svg>
+        <span class="kpi-card__value">{{ s.warning }}</span>
+        <span class="kpi-card__label">Degraded</span>
+        <span class="kpi-card__sub">needs attention</span>
+        <span class="kpi-card__trend" [class.kpi-card__trend--alert]="s.warning > 0" [class.kpi-card__trend--stable]="s.warning === 0">
+          {{ s.warning > 0 ? '+' + s.warning + ' in last 15m' : '— no change' }}
+        </span>
+        <span class="kpi-card__bar"></span>
+      </div>
+      <div class="kpi-card kpi-card--down" [class.kpi-card--down-active]="s.down > 0">
+        <svg class="kpi-card__icon" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M15 9l-6 6M9 9l6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span class="kpi-card__value">{{ s.down }}</span>
+        <span class="kpi-card__label">Critical</span>
+        <span class="kpi-card__sub">{{ s.down > 0 ? 'immediate action' : 'all clear' }}</span>
+        <span class="kpi-card__trend" [class.kpi-card__trend--critical]="s.down > 0" [class.kpi-card__trend--stable]="s.down === 0">
+          {{ s.down > 0 ? '⚠ active incident' : '✓ no incidents' }}
+        </span>
+        <span class="kpi-card__bar"></span>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- ── Skeleton ────────────────────────────────────────── -->
+  <div class="service-grid" *ngIf="isInitialLoading$ | async">
+    <app-skeleton [count]="6"></app-skeleton>
+  </div>
+
+  <!-- ── Body (2-column: main + activity feed) ───────────── -->
+  <div class="dashboard__body" *ngIf="!(isInitialLoading$ | async)">
+
+    <!-- Main Content -->
+    <div class="dashboard__main">
+
+      <!-- ── Service Panel ────────────────────────────────── -->
+      <div class="service-panel">
+
+        <!-- Controls: search + filters + view toggle -->
+        <div class="service-panel__controls">
+          <div class="search-bar">
+            <svg class="search-bar__icon" width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.4"/>
+              <path d="M9.5 9.5L12 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+            <input
+              class="search-bar__input"
+              type="text"
+              placeholder="Search services…"
+              aria-label="Search services by name"
+              (input)="setSearch($any($event.target).value)"
+            />
+          </div>
+          <div class="category-filters">
+            <button
+              class="category-btn"
+              *ngFor="let cat of categories"
+              [class.category-btn--active]="activeCategory === cat"
+              [attr.aria-pressed]="activeCategory === cat"
+              [attr.aria-label]="'Filter by ' + cat + ' services'"
+              (click)="setCategoryFilter(cat)"
+            >{{ cat }}</button>
+          </div>
+        </div>
+
+        <!-- Service Status row with view toggle -->
+        <div class="service-status-row">
+          <span class="service-count">SERVICE STATUS</span>
+          <div class="view-toggle">
+            <button
+              class="view-toggle__btn"
+              [class.view-toggle__btn--active]="viewMode === 'grid'"
+              [attr.aria-pressed]="viewMode === 'grid'"
+              (click)="setView('grid')"
+              title="Grid view"
+              aria-label="Switch to grid view"
+            >
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                <rect x="0" y="0" width="7" height="7" rx="1"/><rect x="9" y="0" width="7" height="7" rx="1"/>
+                <rect x="0" y="9" width="7" height="7" rx="1"/><rect x="9" y="9" width="7" height="7" rx="1"/>
+              </svg>
+              Grid
+            </button>
+            <button
+              class="view-toggle__btn"
+              [class.view-toggle__btn--active]="viewMode === 'list'"
+              [attr.aria-pressed]="viewMode === 'list'"
+              (click)="setView('list')"
+              title="List view"
+              aria-label="Switch to list view"
+            >
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                <rect x="0" y="1" width="16" height="2" rx="1"/><rect x="0" y="7" width="16" height="2" rx="1"/>
+                <rect x="0" y="13" width="16" height="2" rx="1"/>
+              </svg>
+              List
+            </button>
+          </div>
+        </div>
+
+        <!-- Grid View -->
+        <div class="service-panel__grid" *ngIf="viewMode === 'grid'">
+          <a
+            class="service-card"
+            [class.service-card--down]="svc.status === 'DOWN'"
+            [class.service-card--warning]="svc.status === 'WARNING'"
+            [class.service-card--up]="svc.status === 'UP'"
+            [routerLink]="['/detail', svc.id]"
+            [attr.aria-label]="svc.name + ' — status: ' + svc.status + ', view details'"
+            *ngFor="let svc of filteredServices$ | async; trackBy: trackById"
+          >
+            <div class="service-card__status-bar"></div>
+            <div class="service-card__body">
+              <div class="service-card__top">
+                <h2 class="service-card__name">{{ svc.name }}</h2>
+                <app-status-badge [status]="svc.status"></app-status-badge>
+              </div>
+              <div class="service-card__meta">
+                <span class="service-card__version">v{{ svc.version }}</span>
+                <span class="service-card__heartbeat">
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" style="margin-right:4px;vertical-align:middle">
+                    <circle cx="5" cy="5" r="4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M5 3v2.5l1.5 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+                  </svg>
+                  <span class="service-card__heartbeat-ago">{{ timeAgo(svc.lastHeartbeat) }}</span>
+                  <span class="service-card__heartbeat-ts">{{ svc.lastHeartbeat | date:'HH:mm:ss' }}</span>
+                </span>
+              </div>
+              <div class="service-card__telemetry">
+                <span class="telemetry-item">{{ getServiceMetric(svc.id, 'latency') }}</span>
+                <span class="telemetry-sep">·</span>
+                <span class="telemetry-item" [class.telemetry-item--warn]="svc.status !== 'UP'">err {{ getServiceMetric(svc.id, 'errRate') }}</span>
+              </div>
+              <div class="service-card__footer">
+                <span class="service-card__id">{{ svc.id }}</span>
+                <span class="service-card__type">{{ svc.type }}</span>
+              </div>
+            </div>
+            <div class="service-card__arrow">&#8594;</div>
+          </a>
+
+          <!-- Empty filtered state -->
+          <div class="empty-state" *ngIf="(filteredServices$ | async)?.length === 0">
+            <p>No services match the current filter.</p>
+          </div>
+        </div>
+
+        <!-- Table View -->
+        <div class="service-panel__table" *ngIf="viewMode === 'list'">
+          <table class="service-table">
+            <thead>
+              <tr>
+                <th class="service-table__th service-table__th--sortable" (click)="sortBy('status')" [attr.aria-sort]="sortField === 'status' ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'" role="columnheader">
+                  Status
+                  <span class="sort-icon" [class.sort-icon--active]="sortField === 'status'" aria-hidden="true">
+                    {{ sortField === 'status' ? (sortDir === 'asc' ? '▲' : '▼') : '⇅' }}
+                  </span>
+                </th>
+                <th class="service-table__th service-table__th--sortable" (click)="sortBy('name')" [attr.aria-sort]="sortField === 'name' ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'" role="columnheader">
+                  Service
+                  <span class="sort-icon" [class.sort-icon--active]="sortField === 'name'" aria-hidden="true">
+                    {{ sortField === 'name' ? (sortDir === 'asc' ? '▲' : '▼') : '⇅' }}
+                  </span>
+                </th>
+                <th class="service-table__th">Category</th>
+                <th class="service-table__th service-table__th--sortable" (click)="sortBy('version')" [attr.aria-sort]="sortField === 'version' ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'" role="columnheader">
+                  Version
+                  <span class="sort-icon" [class.sort-icon--active]="sortField === 'version'" aria-hidden="true">
+                    {{ sortField === 'version' ? (sortDir === 'asc' ? '▲' : '▼') : '⇅' }}
+                  </span>
+                </th>
+                <th class="service-table__th service-table__th--sortable" (click)="sortBy('lastHeartbeat')" [attr.aria-sort]="sortField === 'lastHeartbeat' ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'" role="columnheader">
+                  Last Heartbeat
+                  <span class="sort-icon" [class.sort-icon--active]="sortField === 'lastHeartbeat'" aria-hidden="true">
+                    {{ sortField === 'lastHeartbeat' ? (sortDir === 'asc' ? '▲' : '▼') : '⇅' }}
+                  </span>
+                </th>
+                <th class="service-table__th service-table__th--action"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                class="service-table__row"
+                [class.service-table__row--down]="svc.status === 'DOWN'"
+                [class.service-table__row--warning]="svc.status === 'WARNING'"
+                [routerLink]="['/detail', svc.id]"
+                *ngFor="let svc of filteredServices$ | async; trackBy: trackById"
+              >
+                <td class="service-table__td">
+                  <app-status-badge [status]="svc.status"></app-status-badge>
+                </td>
+                <td class="service-table__td service-table__td--name">
+                  <span class="table-service-name">{{ svc.name }}</span>
+                  <span class="table-service-id">{{ svc.id }}</span>
+                </td>
+                <td class="service-table__td">
+                  <span class="type-chip type-chip--{{ svc.type.toLowerCase() }}">{{ svc.type }}</span>
+                </td>
+                <td class="service-table__td">
+                  <span class="table-version">v{{ svc.version }}</span>
+                </td>
+                <td class="service-table__td table-heartbeat">
+                  <span class="table-heartbeat__ago">{{ timeAgo(svc.lastHeartbeat) }}</span>
+                  <span class="table-heartbeat__ts">{{ svc.lastHeartbeat | date:'HH:mm:ss' }}</span>
+                </td>
+                <td class="service-table__td service-table__td--arrow">&#8594;</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="empty-state" *ngIf="(filteredServices$ | async)?.length === 0">
+            <p>No services match the current filter.</p>
+          </div>
+        </div>
+
+      </div><!-- /service-panel -->
+
+      <!-- ── Performance Overview ───────────────────────── -->
+      <div class="perf-overview">
+        <div class="perf-overview__header">
+          <div class="perf-overview__header-left">
+            <span class="perf-overview__title">Performance Overview</span>
+            <span class="perf-overview__sub">Service health metrics — {{ chartRangeLabel }}</span>
+          </div>
+          <div class="perf-time-filters">
+            <button class="perf-time-btn" [class.perf-time-btn--active]="chartRange === '5m'"  (click)="setChartRange('5m')">5m</button>
+            <button class="perf-time-btn" [class.perf-time-btn--active]="chartRange === '15m'" (click)="setChartRange('15m')">15m</button>
+            <button class="perf-time-btn" [class.perf-time-btn--active]="chartRange === '1h'"  (click)="setChartRange('1h')">1h</button>
+            <button class="perf-time-btn" [class.perf-time-btn--active]="chartRange === '5h'"  (click)="setChartRange('5h')">5h</button>
+            <button class="perf-time-btn" [class.perf-time-btn--active]="chartRange === '1d'"  (click)="setChartRange('1d')">1d</button>
+          </div>
+        </div>
+        <div class="perf-overview__chart">
+          <canvas baseChart [data]="chartData" [options]="chartOptions" [type]="'line'"></canvas>
+        </div>
+      </div>
+
+    </div><!-- /dashboard__main -->
+
+    <!-- ── Activity Feed ─────────────────────────────────── -->
+    <aside class="activity-feed">
+      <div class="activity-feed__header">
+        <span class="activity-feed__title">Real-time Activity</span>
+        <span class="activity-feed__live">&#9679; LIVE</span>
+      </div>
+      <div class="activity-feed__body" aria-live="polite" aria-label="Real-time service activity feed">
+        <div
+          class="feed-item"
+          [ngClass]="'feed-item--' + item.level.toLowerCase()"
+          *ngFor="let item of displayedFeed$ | async; trackBy: trackByLogId"
+        >
+          <div class="feed-item__time">{{ formatFeedTime(item.timestamp) }}</div>
+          <div class="feed-item__content">
+            <div class="feed-item__top">
+              <span class="feed-item__service">{{ item.serviceName }}</span>
+              <span class="feed-item__level">{{ item.level }}</span>
+            </div>
+            <p class="feed-item__message">{{ item.message }}</p>
+          </div>
+        </div>
+
+        <div class="activity-feed__empty" *ngIf="(displayedFeed$ | async)?.length === 0">
+          No activity data available.
+        </div>
+      </div>
+
+      <!-- View All Footer -->
+      <div class="activity-feed__footer" *ngIf="(totalFeedCount$ | async) as total">
+        <button class="activity-feed__viewall" (click)="toggleAllActivity()">
+          <ng-container *ngIf="!showAllActivity">
+            View all {{ total }} events &#8595;
+          </ng-container>
+          <ng-container *ngIf="showAllActivity">
+            Show less &#8593;
+          </ng-container>
+        </button>
+      </div>
+    </aside>
+
+  </div><!-- /dashboard__body -->
+
+</div>

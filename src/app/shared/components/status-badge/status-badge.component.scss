@@ -1,0 +1,51 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 11px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-family: var(--font-mono);
+  flex-shrink: 0;
+
+  &--up {
+    background: var(--status-up-bg);
+    color: var(--status-up);
+    border: 1px solid var(--status-up-border);
+  }
+
+  &--down {
+    background: var(--status-down-bg);
+    color: var(--status-down);
+    border: 1px solid var(--status-down-border);
+  }
+
+  &--warning {
+    background: var(--status-warning-bg);
+    color: var(--status-warning);
+    border: 1px solid var(--status-warning-border);
+  }
+
+  &__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+
+    .badge--up & { background: var(--status-up); }
+    .badge--down & { background: var(--status-down); }
+    .badge--warning & { background: var(--status-warning); }
+
+    &--pulse {
+      animation: badge-pulse 1.5s ease-in-out infinite;
+    }
+  }
+}
+
+@keyframes badge-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(1.5); }
+}

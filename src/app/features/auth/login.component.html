@@ -1,0 +1,71 @@
+<div class="login-page" role="main">
+  <span class="login-watermark" aria-hidden="true">GMF</span>
+  <div class="login-card">
+    <div class="login-card__brand">
+      <img src="logo_GMF_.png" alt="GMF AeroAsia" class="login-card__gmf-logo" />
+    </div>
+
+    <div class="login-card__divider"></div>
+
+    <div class="login-card__title-group">
+      <h1 class="login-card__title">Monitoring Command Center</h1>
+      <p class="login-card__subtitle">Service Reliability Dashboard &middot; Sign in to continue</p>
+    </div>
+
+    <form class="login-form" (ngSubmit)="onSubmit()" novalidate aria-label="Sign in form">
+      <div
+        class="login-form__error"
+        role="alert"
+        aria-live="assertive"
+        *ngIf="errorMessage"
+      >
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true">
+          <path d="M7 1L13 13H1L7 1Z"/>
+          <rect x="6.5" y="5" width="1" height="4" rx="0.5" fill="white"/>
+          <circle cx="7" cy="11" r="0.7" fill="white"/>
+        </svg>
+        {{ errorMessage }}
+      </div>
+
+      <div class="login-form__field">
+        <label class="login-form__label" for="username">Username</label>
+        <input
+          id="username"
+          class="login-form__input"
+          type="text"
+          [(ngModel)]="username"
+          name="username"
+          autocomplete="username"
+          placeholder="Enter username"
+          [attr.aria-invalid]="errorMessage ? 'true' : null"
+        />
+      </div>
+
+      <div class="login-form__field">
+        <label class="login-form__label" for="password">Password</label>
+        <input
+          id="password"
+          class="login-form__input"
+          type="password"
+          [(ngModel)]="password"
+          name="password"
+          autocomplete="current-password"
+          placeholder="Enter password"
+          [attr.aria-invalid]="errorMessage ? 'true' : null"
+        />
+      </div>
+
+      <button
+        class="login-form__submit"
+        type="submit"
+        [disabled]="isLoading"
+        aria-label="Sign in to dashboard"
+      >
+        <span class="spinner" *ngIf="isLoading" aria-hidden="true"></span>
+        {{ isLoading ? 'Authenticating…' : 'Sign In' }}
+      </button>
+    </form>
+
+    <p class="login-card__hint">Demo credentials: <code>admin</code> / <code>admin123</code></p>
+  </div>
+</div>

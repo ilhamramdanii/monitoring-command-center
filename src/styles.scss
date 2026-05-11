@@ -1,0 +1,69 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* Background layers */
+  --bg:                  #060D18;
+  --surface:             #0B1524;
+  --surface-elevated:    #0F1D30;
+  --surface-hover:       #142236;
+
+  /* Borders */
+  --border:              #1A2E45;
+  --border-muted:        #0F1F30;
+  --border-accent:       rgba(6, 99, 152, 0.4);
+
+  /* GMF AeroAsia brand */
+  --accent:              #066398;
+  --accent-bright:       #0A90D4;
+  --accent-dim:          rgba(6, 99, 152, 0.12);
+  --accent-glow:         rgba(6, 99, 152, 0.22);
+
+  /* Typography */
+  --text-primary:        #D8E8F2;
+  --text-secondary:      #7A9FBD;
+  --text-muted:          #3D5A73;
+
+  /* Status — aviation standard */
+  --status-up:           #00C896;
+  --status-up-bg:        rgba(0, 200, 150, 0.08);
+  --status-up-border:    rgba(0, 200, 150, 0.22);
+
+  --status-warning:      #F5A623;
+  --status-warning-bg:   rgba(245, 166, 35, 0.08);
+  --status-warning-border: rgba(245, 166, 35, 0.28);
+
+  --status-down:         #E03C3C;
+  --status-down-bg:      rgba(224, 60, 60, 0.08);
+  --status-down-border:  rgba(224, 60, 60, 0.32);
+  --status-down-glow:    rgba(224, 60, 60, 0.18);
+
+  /* Fonts */
+  --font-ui:   'Inter', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Consolas', monospace;
+}
+
+html, body {
+  height: 100%;
+  background:
+    radial-gradient(circle, rgba(6, 99, 152, 0.055) 1px, transparent 1px) 0 0 / 28px 28px,
+    var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: var(--font-ui);
+  cursor: pointer;
+}

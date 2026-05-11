@@ -1,0 +1,59 @@
+.error-banner {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 18px;
+  background: rgba(224, 60, 60, 0.08);
+  border: 1px solid rgba(224, 60, 60, 0.3);
+  border-left: 3px solid #E03C3C;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  overflow: hidden;
+
+  &__left {
+    flex-shrink: 0;
+    color: #E03C3C;
+    margin-top: 1px;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+  }
+
+  &__message {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #F09090;
+    line-height: 1.4;
+  }
+
+  &__stale {
+    font-size: 0.75rem;
+    color: rgba(240, 144, 144, 0.7);
+    font-family: 'JetBrains Mono', monospace;
+
+    &--nodata {
+      color: rgba(245, 166, 35, 0.8);
+    }
+  }
+
+  // Subtle animated right-edge pulse to signal "still trying"
+  &__pulse {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: #E03C3C;
+    animation: banner-pulse 2s ease-in-out infinite;
+  }
+}
+
+@keyframes banner-pulse {
+  0%, 100% { opacity: 0.3; }
+  50%       { opacity: 1; }
+}

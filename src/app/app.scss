@@ -1,0 +1,160 @@
+/* ── App Shell Layout ───────────────────────────────────── */
+.app-shell {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.app-main {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.app-shell--auth {
+  .app-main { width: 100%; }
+}
+
+/* ── Sidebar ────────────────────────────────────────────── */
+.sidebar {
+  width: 216px;
+  flex-shrink: 0;
+  background: #0B1524;
+  border-right: 1px solid #1A2E45;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.24s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+
+  &--collapsed {
+    width: 52px;
+
+    .sidebar__item-label,
+    .sidebar__status-text {
+      opacity: 0;
+      max-width: 0;
+      pointer-events: none;
+    }
+  }
+
+  /* Brand — GMF logo only */
+  &__brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 10px;
+    border-bottom: 1px solid #1A2E45;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  &__logo {
+    height: 26px;
+    width: auto;
+    flex-shrink: 0;
+    display: block;
+  }
+
+  /* Nav list */
+  &__nav {
+    list-style: none;
+    padding: 6px 0;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    &::-webkit-scrollbar { width: 3px; }
+    &::-webkit-scrollbar-thumb { background: #1A2E45; border-radius: 2px; }
+  }
+
+  /* Divider */
+  &__divider {
+    height: 1px;
+    background: #1A2E45;
+    margin: 5px 12px;
+    list-style: none;
+  }
+
+  /* Nav item */
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 14px;
+    cursor: pointer;
+    color: #3D5A73;
+    white-space: nowrap;
+    position: relative;
+    transition: background 0.12s, color 0.12s;
+
+    &:hover { background: #0F1D30; color: #7A9FBD; }
+
+    &--active {
+      color: #0A90D4;
+      background: rgba(6, 99, 152, 0.1);
+
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0; top: 0; bottom: 0;
+        width: 3px;
+        background: #0A90D4;
+        border-radius: 0 2px 2px 0;
+      }
+    }
+
+    &-icon {
+      flex-shrink: 0;
+      width: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    &-label {
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      overflow: hidden;
+      max-width: 140px;
+      opacity: 1;
+      transition: opacity 0.15s, max-width 0.24s;
+      white-space: nowrap;
+    }
+  }
+
+  /* Footer */
+  &__footer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 14px;
+    border-top: 1px solid #1A2E45;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  &__status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #00C896;
+    flex-shrink: 0;
+    animation: sb-pulse 2.2s ease-in-out infinite;
+  }
+
+  &__status-text {
+    font-size: 0.68rem;
+    color: #00C896;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 140px;
+    opacity: 1;
+    transition: opacity 0.15s, max-width 0.24s;
+  }
+}
+
+@keyframes sb-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }

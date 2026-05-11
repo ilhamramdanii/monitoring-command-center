@@ -1,0 +1,141 @@
+<div
+  class="app-shell"
+  [class.app-shell--collapsed]="sidebar.collapsed$ | async"
+  [class.app-shell--auth]="!showSidebar"
+>
+
+  <!-- ── Sidebar ──────────────────────────────────────────── -->
+  <nav class="sidebar" [class.sidebar--collapsed]="sidebar.collapsed$ | async" *ngIf="showSidebar">
+
+    <div class="sidebar__brand">
+      <img src="logo_GMF.png" class="sidebar__logo" alt="GMF AeroAsia" />
+    </div>
+
+    <ul class="sidebar__nav">
+      <!-- Dashboard — active -->
+      <li class="sidebar__item sidebar__item--active" title="Dashboard">
+        <span class="sidebar__item-icon">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor">
+            <rect x="0" y="0" width="7" height="7" rx="1.5"/>
+            <rect x="9" y="0" width="7" height="7" rx="1.5"/>
+            <rect x="0" y="9" width="7" height="7" rx="1.5"/>
+            <rect x="9" y="9" width="7" height="7" rx="1.5"/>
+          </svg>
+        </span>
+        <span class="sidebar__item-label">Dashboard</span>
+      </li>
+
+      <!-- Services -->
+      <li class="sidebar__item" title="Services">
+        <span class="sidebar__item-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <rect x="2" y="3" width="20" height="5" rx="1"/>
+            <rect x="2" y="11" width="20" height="5" rx="1"/>
+            <rect x="2" y="19" width="20" height="2" rx="1"/>
+          </svg>
+        </span>
+        <span class="sidebar__item-label">Services</span>
+      </li>
+
+      <!-- Incidents -->
+      <li class="sidebar__item" title="Incidents">
+        <span class="sidebar__item-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <circle cx="12" cy="17" r="0.5" fill="currentColor"/>
+          </svg>
+        </span>
+        <span class="sidebar__item-label">Incidents</span>
+      </li>
+
+      <!-- Alerts -->
+      <li class="sidebar__item" title="Alerts">
+        <span class="sidebar__item-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 01-3.46 0"/>
+          </svg>
+        </span>
+        <span class="sidebar__item-label">Alerts</span>
+      </li>
+
+      <li class="sidebar__divider"></li>
+
+      <!-- Metrics -->
+      <li class="sidebar__item" title="Metrics">
+        <span class="sidebar__item-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <line x1="18" y1="20" x2="18" y2="10"/>
+            <line x1="12" y1="20" x2="12" y2="4"/>
+            <line x1="6"  y1="20" x2="6"  y2="14"/>
+          </svg>
+        </span>
+        <span class="sidebar__item-label">Metrics</span>
+      </li>
+
+      <!-- Logs -->
+      <li class="sidebar__item" title="Logs">
+        <span class="sidebar__item-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+        </span>
+        <span class="sidebar__item-label">Logs</span>
+      </li>
+
+      <!-- Reports -->
+      <li class="sidebar__item" title="Reports">
+        <span class="sidebar__item-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M21.21 15.89A10 10 0 1 1 8 2.83"/>
+            <path d="M22 12A10 10 0 0 0 12 2v10z"/>
+          </svg>
+        </span>
+        <span class="sidebar__item-label">Reports</span>
+      </li>
+
+      <li class="sidebar__divider"></li>
+
+      <!-- Users -->
+      <li class="sidebar__item" title="Users">
+        <span class="sidebar__item-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+            <path d="M16 3.13a4 4 0 010 7.75"/>
+          </svg>
+        </span>
+        <span class="sidebar__item-label">Users</span>
+      </li>
+
+      <!-- Settings -->
+      <li class="sidebar__item" title="Settings">
+        <span class="sidebar__item-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+          </svg>
+        </span>
+        <span class="sidebar__item-label">Settings</span>
+      </li>
+    </ul>
+
+    <!-- Footer: system status -->
+    <div class="sidebar__footer">
+      <span class="sidebar__status-dot"></span>
+      <span class="sidebar__status-text">System Online</span>
+    </div>
+
+  </nav>
+
+  <!-- ── Main ─────────────────────────────────────────────── -->
+  <main class="app-main">
+    <router-outlet></router-outlet>
+  </main>
+
+</div>

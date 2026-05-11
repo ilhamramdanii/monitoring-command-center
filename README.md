@@ -18,7 +18,7 @@ Centralized real-time service monitoring dashboard built for **GMF AeroAsia** as
 ![Dashboard](docs/screenshots/dashboard.png)
 
 ### Login Page
-![Login](docs/screenshots/login.png)
+![Login](docs/screenshots/login-v2.png)
 
 ---
 

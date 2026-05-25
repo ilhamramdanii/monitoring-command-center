@@ -6,6 +6,11 @@ import { AuthService } from '../services/auth.service';
 export class AuthGuard implements CanActivate {
   constructor(private readonly auth: AuthService, private readonly router: Router) {}
 
+  /**
+   * canActivate:
+   * Melindungi rute aplikasi (Route Guard).
+   * Mengecek status login user; jika belum login, arahkan paksa ke halaman login.
+   */
   canActivate(): boolean {
     if (this.auth.isAuthenticated()) return true;
     this.router.navigate(['/login']);

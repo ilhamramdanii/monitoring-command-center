@@ -246,6 +246,7 @@
 // Pure CSS animation — GPU-driven, zero JS timing jitter
 .ring-depleting {
   animation: ring-deplete 15s linear forwards;
+  -webkit-animation: ring-deplete 15s linear forwards;
 }
 
 @keyframes ring-deplete {

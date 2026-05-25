@@ -3,7 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, combineLatest, of } from 'rxjs';
 import { catchError, filter, map, switchMap } from 'rxjs/operators';
 import { MonitoringService } from '../../core/services/monitoring.service';
-import { LogEntry, ServiceItem } from '../../core/models/service-item.model';
+import { DateUtilService } from '../../shared/utils/date-util.service';
+import { LogEntryDto as LogEntry, ServiceItemDto as ServiceItem } from '../../shared/dtos/service-item.dto';
 
 @Component({
   selector: 'app-detail',
@@ -19,7 +20,8 @@ export class DetailComponent implements OnInit {
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly monitoring: MonitoringService
+    private readonly monitoring: MonitoringService,
+    public readonly dateUtil: DateUtilService,
   ) {}
 
   ngOnInit(): void {
@@ -50,13 +52,5 @@ export class DetailComponent implements OnInit {
 
   goBack(): void {
     this.router.navigate(['/']);
-  }
-
-  formatTime(iso: string): string {
-    return new Date(iso).toLocaleTimeString('en-GB', {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-    });
   }
 }

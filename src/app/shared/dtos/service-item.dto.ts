@@ -1,7 +1,7 @@
 export type ServiceStatus = 'UP' | 'DOWN' | 'WARNING';
 export type ServiceCategory = 'Core' | 'Integration' | 'Infrastructure' | 'Data';
 
-export interface ServiceItem {
+export interface ServiceItemDto {
   id: string;
   name: string;
   version: string;
@@ -10,7 +10,7 @@ export interface ServiceItem {
   type: ServiceCategory;
 }
 
-export interface LogEntry {
+export interface LogEntryDto {
   id: string;
   serviceId: string;
   timestamp: string;
@@ -18,6 +18,6 @@ export interface LogEntry {
   level: 'INFO' | 'WARN' | 'ERROR';
 }
 
-export interface ActivityItem extends LogEntry {
+export interface ActivityItemDto extends LogEntryDto {
   serviceName: string;
 }

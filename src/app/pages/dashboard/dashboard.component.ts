@@ -5,7 +5,8 @@ import { ChartConfiguration, ChartData } from 'chart.js';
 import { MonitoringService } from '../../core/services/monitoring.service';
 import { SidebarService } from '../../core/services/sidebar.service';
 import { AuthService } from '../../core/services/auth.service';
-import { ActivityItem, LogEntry, ServiceCategory, ServiceItem, ServiceStatus } from '../../core/models/service-item.model';
+import { DateUtilService } from '../../shared/utils/date-util.service';
+import { ActivityItemDto as ActivityItem, LogEntryDto as LogEntry, ServiceCategory, ServiceItemDto as ServiceItem, ServiceStatus } from '../../shared/dtos/service-item.dto';
 
 type SortField = 'name' | 'status' | 'version' | 'lastHeartbeat';
 type SortDir = 'asc' | 'desc';
@@ -14,6 +15,11 @@ type ChartRange = '5m' | '15m' | '1h' | '5h' | '1d';
 
 interface Summary { up: number; down: number; warning: number; total: number; }
 
+/**
+ * STATUS_RANK: Menentukan urutan prioritas tampilan.
+ * DOWN (0) muncul paling atas, diikuti WARNING (1), lalu UP (2).
+ * Ini krusial bagi operator Command Center untuk melihat masalah terlebih dahulu.
+ */
 const STATUS_RANK: Record<ServiceStatus, number> = { DOWN: 0, WARNING: 1, UP: 2 };
 const CATEGORIES: Array<ServiceCategory | 'All'> = ['All', 'Core', 'Integration', 'Infrastructure', 'Data'];
 const HISTORY_POINTS = 30;
@@ -173,6 +179,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     public readonly monitoring: MonitoringService,
     public readonly sidebar: SidebarService,
     public readonly auth: AuthService,
+    public readonly dateUtil: DateUtilService,
   ) {}
 
   @HostListener('document:keydown.escape')
@@ -255,6 +262,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.syncSub?.unsubscribe();
   }
 
+  /**
+   * Algoritma "Random Walk":
+   * Menghasilkan data simulasi yang terlihat realistis untuk keperluan demonstrasi/prototype.
+   * Menggunakan bias (0.44) agar tren grafik cenderung stabil atau naik secara natural.
+   */
   private initChartHistory(): void {
     const now = Date.now();
     const labels: string[] = [];
@@ -270,16 +282,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
       ? { hour: '2-digit', minute: '2-digit', second: '2-digit' }
       : { hour: '2-digit', minute: '2-digit' };
 
-    // Random walk to generate realistic-looking placeholder history
+    // Proses Random Walk
     let upWalk = 82, downWalk = 5;
     for (let i = HISTORY_POINTS - 1; i >= 0; i--) {
       const t = new Date(now - i * interval);
       labels.push(t.toLocaleTimeString('en-GB', timeOpts));
+      
+      // Kalkulasi perubahan acak yang dibatasi (clamping)
       upWalk   = Math.max(55, Math.min(96, upWalk   + (Math.random() - 0.44) * 7));
       downWalk = Math.max(0,  Math.min(18, downWalk + (Math.random() - 0.5)  * 3));
+      
       const up   = Math.round(upWalk);
       const down = Math.round(downWalk);
       const warn = Math.max(0, Math.min(100 - up - down, Math.round(Math.random() * 12)));
+      
       uptimePcts.push(up);
       errorPcts.push(down);
       warningPcts.push(warn);
@@ -337,25 +353,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * trackById (Performance Optimization):
+   * Memberi tahu Angular cara mengidentifikasi item dalam list unik.
+   * Mencegah render ulang seluruh elemen DOM jika hanya data di dalam item yang berubah.
+   */
   trackById(_: number, item: ServiceItem): string { return item.id; }
   trackByLogId(_: number, item: ActivityItem): string { return item.id; }
 
   private updateClock(): void {
     this.currentTime = new Date().toLocaleTimeString('en-GB', {
-      hour: '2-digit', minute: '2-digit', second: '2-digit',
-    });
-  }
-
-  timeAgo(isoString: string): string {
-    const diff = Math.floor((Date.now() - new Date(isoString).getTime()) / 1000);
-    if (diff < 5) return 'just now';
-    if (diff < 60) return `${diff}s ago`;
-    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-    return `${Math.floor(diff / 3600)}h ago`;
-  }
-
-  formatFeedTime(isoString: string): string {
-    return new Date(isoString).toLocaleTimeString('en-GB', {
       hour: '2-digit', minute: '2-digit', second: '2-digit',
     });
   }

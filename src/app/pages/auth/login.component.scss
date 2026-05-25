@@ -140,6 +140,12 @@
     gap: 6px;
   }
 
+  &__field-error {
+    font-size: 0.71rem;
+    color: #E03C3C;
+    margin-top: -2px;
+  }
+
   &__label {
     font-size: 0.75rem;
     font-weight: 600;

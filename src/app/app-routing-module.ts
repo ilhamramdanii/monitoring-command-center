@@ -6,19 +6,19 @@ const routes: Routes = [
   {
     path: 'login',
     loadChildren: () =>
-      import('./features/auth/auth.module').then(m => m.AuthModule),
+      import('./pages/auth/auth.module').then(m => m.AuthModule),
   },
   {
     path: '',
     canActivate: [AuthGuard],
     loadChildren: () =>
-      import('./features/dashboard/dashboard.module').then(m => m.DashboardModule),
+      import('./pages/dashboard/dashboard.module').then(m => m.DashboardModule),
   },
   {
     path: 'detail/:id',
     canActivate: [AuthGuard],
     loadChildren: () =>
-      import('./features/detail/detail.module').then(m => m.DetailModule),
+      import('./pages/detail/detail.module').then(m => m.DetailModule),
   },
   { path: '**', redirectTo: '' },
 ];

@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { DateUtilService } from '../../utils/date-util.service';
 
 @Component({
   selector: 'app-error-banner',
@@ -17,7 +18,7 @@ import { Component, Input } from '@angular/core';
       <div class="error-banner__body">
         <span class="error-banner__message">{{ message }}</span>
         <span class="error-banner__stale" *ngIf="lastSyncAt">
-          Menampilkan data terakhir dari pukul {{ formatTime(lastSyncAt) }}
+          Menampilkan data terakhir dari pukul {{ dateUtil.formatDate(lastSyncAt!) }}
           &mdash; sistem akan pulih otomatis
         </span>
         <span class="error-banner__stale error-banner__stale--nodata" *ngIf="!lastSyncAt">
@@ -33,9 +34,5 @@ export class ErrorBannerComponent {
   @Input() message: string | null = null;
   @Input() lastSyncAt: Date | null = null;
 
-  formatTime(d: Date): string {
-    return new Date(d).toLocaleTimeString('en-GB', {
-      hour: '2-digit', minute: '2-digit', second: '2-digit',
-    });
-  }
+  constructor(public readonly dateUtil: DateUtilService) {}
 }

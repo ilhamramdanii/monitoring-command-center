@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { AuthService } from './auth.service';
+import { environment } from '../../../environments/environment';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -24,24 +25,24 @@ describe('AuthService', () => {
   });
 
   it('should authenticate with valid credentials', () => {
-    const result = service.login('admin', 'admin123');
+    const result = service.login(environment.demoUsername, environment.demoPassword);
     expect(result).toBe(true);
     expect(service.isAuthenticated()).toBe(true);
   });
 
   it('should reject invalid credentials', () => {
-    const result = service.login('admin', 'wrongpassword');
+    const result = service.login(environment.demoUsername, 'wrongpassword');
     expect(result).toBe(false);
     expect(service.isAuthenticated()).toBe(false);
   });
 
   it('should store a token on successful login', () => {
-    service.login('admin', 'admin123');
+    service.login(environment.demoUsername, environment.demoPassword);
     expect(service.getToken()).toBeTruthy();
   });
 
   it('should clear token on logout', () => {
-    service.login('admin', 'admin123');
+    service.login(environment.demoUsername, environment.demoPassword);
     service.logout();
     expect(service.getToken()).toBeNull();
   });

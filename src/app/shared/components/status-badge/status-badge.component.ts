@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ServiceStatus } from '../../../core/models/service-item.model';
+import { ServiceStatus } from '../../dtos/service-item.dto';
 
 @Component({
   selector: 'app-status-badge',

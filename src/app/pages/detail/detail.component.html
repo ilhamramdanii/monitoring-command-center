@@ -50,7 +50,7 @@
           [ngClass]="'log-entry--' + entry.level.toLowerCase()"
           *ngFor="let entry of logs$ | async"
         >
-          <span class="log-entry__time">{{ formatTime(entry.timestamp) }}</span>
+          <span class="log-entry__time">{{ dateUtil.formatTime(entry.timestamp) }}</span>
           <span class="log-entry__level">[{{ entry.level }}]</span>
           <span class="log-entry__message">{{ entry.message }}</span>
         </div>

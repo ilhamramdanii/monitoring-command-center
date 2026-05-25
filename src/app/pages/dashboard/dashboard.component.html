@@ -249,7 +249,7 @@
                     <circle cx="5" cy="5" r="4" fill="none" stroke="currentColor" stroke-width="1.5"/>
                     <path d="M5 3v2.5l1.5 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" fill="none"/>
                   </svg>
-                  <span class="service-card__heartbeat-ago">{{ timeAgo(svc.lastHeartbeat) }}</span>
+                  <span class="service-card__heartbeat-ago">{{ dateUtil.timeAgo(svc.lastHeartbeat) }}</span>
                   <span class="service-card__heartbeat-ts">{{ svc.lastHeartbeat | date:'HH:mm:ss' }}</span>
                 </span>
               </div>
@@ -327,7 +327,7 @@
                   <span class="table-version">v{{ svc.version }}</span>
                 </td>
                 <td class="service-table__td table-heartbeat">
-                  <span class="table-heartbeat__ago">{{ timeAgo(svc.lastHeartbeat) }}</span>
+                  <span class="table-heartbeat__ago">{{ dateUtil.timeAgo(svc.lastHeartbeat) }}</span>
                   <span class="table-heartbeat__ts">{{ svc.lastHeartbeat | date:'HH:mm:ss' }}</span>
                 </td>
                 <td class="service-table__td service-table__td--arrow">&#8594;</td>
@@ -375,7 +375,7 @@
           [ngClass]="'feed-item--' + item.level.toLowerCase()"
           *ngFor="let item of displayedFeed$ | async; trackBy: trackByLogId"
         >
-          <div class="feed-item__time">{{ formatFeedTime(item.timestamp) }}</div>
+          <div class="feed-item__time">{{ dateUtil.formatTime(item.timestamp) }}</div>
           <div class="feed-item__content">
             <div class="feed-item__top">
               <span class="feed-item__service">{{ item.serviceName }}</span>
